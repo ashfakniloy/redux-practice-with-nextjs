@@ -15,11 +15,11 @@ export default function Home() {
     dispatch(increment());
   };
 
-  // useEffect(() => {
-  //   dispatch(getUsers());
-  // }, [dispatch, getUsers]);
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
 
-  // console.log(users);
+  console.log(users);
 
   return (
     <div className="">
@@ -37,7 +37,7 @@ export default function Home() {
       </div>
 
       <div className="my-10">
-        <h1 className="text-lg">Server side data fetching</h1>
+        <h1 className="text-lg">Client side data fetching</h1>
         <h1 className="mt-3 text-2xl">Users:</h1>
         {users.map((user, i) => (
           <p key={i}>{user.name}</p>
@@ -45,29 +45,8 @@ export default function Home() {
       </div>
 
       <p className="mt-4">
-        <Link href="/page2">Go to page2</Link>
+        <Link href="/">Go to home</Link>
       </p>
     </div>
   );
 }
-
-export async function getServerSideProps() {
-  const store = getStore();
-  await store.dispatch(getUsers());
-  return {
-    props: {
-      initialState: store.getState(),
-    },
-  };
-}
-
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async () => {
-//     const response = await fetch(
-//       `https://reqres.in/api/users/${Math.floor(Math.random() * 10 + 1)}`
-//     );
-//     const data = await response.json();
-//     store.dispatch(addUser(`${data.first_name} ${data.last_name}`));
-//     store.dispatch(increment());
-//   }
-// );
