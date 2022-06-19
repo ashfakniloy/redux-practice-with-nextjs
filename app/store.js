@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import counterReducer from "../features/demo/counterSlice";
 import usersReducer from "../features/demo/usersSlice";
+import todosReducer from "../features/demo/todosSlice";
 import personsReducer from "../features/demo2/personsSlice";
 
 // export default function getStore(incomingPreloadState) {
@@ -18,6 +19,7 @@ import personsReducer from "../features/demo2/personsSlice";
 export const combinedReducers = combineReducers({
   counter: counterReducer,
   users: usersReducer,
+  todos: todosReducer,
   persons: personsReducer,
 });
 

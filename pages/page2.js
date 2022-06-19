@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { increment } from "../features/demo/counterSlice";
-import { getUsers } from "../features/demo/usersSlice";
 import { addPerson } from "../features/demo2/personsSlice";
 import Header from "../components/Header";
+import { getTodos } from "../features/demo/todosSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
   const counter = useSelector((state) => state.counter.count);
-  const users = useSelector((state) => state.users.users);
+  const todos = useSelector((state) => state.todos.todos);
   const persons = useSelector((state) => state.persons.persons);
 
   const [name, setName] = useState("");
@@ -26,10 +26,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    dispatch(getUsers());
+    dispatch(getTodos());
   }, []);
 
-  console.log(users);
+  console.log(todos);
 
   return (
     <div className="bg-blue-50">
@@ -72,8 +72,9 @@ export default function Home() {
       <hr className="mt-10" />
       <div className="my-10">
         <h1 className="text-2xl font-bold">Client side data fetching</h1>
-        <h1 className="mt-3 text-2xl">Users:</h1>
-        {users && users.map((user, i) => <p key={i}>{user.name}</p>)}
+        <h1 className="mt-3 text-2xl">todos:</h1>
+        {todos &&
+          todos.slice(0, 10).map((todo, i) => <p key={i}>{todo.title}</p>)}
       </div>
 
       <div className="mt-4">
