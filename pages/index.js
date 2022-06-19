@@ -1,28 +1,33 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import getStore, { wrapper } from "../app/store";
+import { wrapper } from "../app/store";
 import { increment } from "../features/demo/counterSlice";
-import { addUser, getUsers } from "../features/demo/usersSlice";
+import { getUsers } from "../features/demo/usersSlice";
 import Header from "../components/Header";
+import { addPerson } from "../features/demo2/personsSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
   const counter = useSelector((state) => state.counter.count);
   const users = useSelector((state) => state.users.users);
+  const persons = useSelector((state) => state.persons.persons);
+
+  const [name, setName] = useState("");
 
   const handleIncrement = () => {
     dispatch(increment());
   };
 
-  // useEffect(() => {
-  //   dispatch(getUsers());
-  // }, [dispatch, getUsers]);
-
-  // console.log(users);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log({ name });
+    dispatch(addPerson(name));
+    setName("");
+  };
 
   return (
-    <div className="">
+    <div className="bg-red-50">
       <Header />
       <h1>redux practice</h1>
 
@@ -36,38 +41,46 @@ export default function Home() {
         </button>
       </div>
 
-      <div className="my-10">
-        <h1 className="text-lg">Server side data fetching</h1>
-        <h1 className="mt-3 text-2xl">Users:</h1>
-        {users.map((user, i) => (
-          <p key={i}>{user.name}</p>
+      <div className="mt-3">
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="p-1 outline-none border border-slate-500 focus:border-slate-800"
+        />
+        <button
+          type="submit"
+          className="py-1 px-4 ml-1 bg-slate-400 active:bg-slate-500 border border-slate-400"
+          onClick={handleSubmit}
+        >
+          Add
+        </button>
+      </div>
+
+      <div className="mt-5">
+        <h1 className="text-2xl">Added names:</h1>
+        {persons.map((person, i) => (
+          <p key={i}>{person}</p>
         ))}
       </div>
 
-      <p className="mt-4">
-        <Link href="/page2">Go to page2</Link>
-      </p>
+      <hr className="mt-10" />
+
+      <div className="my-10">
+        <h1 className="text-2xl font-bold">Server side data fetching</h1>
+        <h1 className="mt-3 text-2xl">Users:</h1>
+        {users && users.map((user, i) => <p key={i}>{user.name}</p>)}
+      </div>
+
+      <div className="mt-4">
+        <Link href="/page2">Go to other page</Link>
+      </div>
     </div>
   );
 }
 
-export async function getServerSideProps() {
-  const store = getStore();
-  await store.dispatch(getUsers());
-  return {
-    props: {
-      initialState: store.getState(),
-    },
-  };
-}
-
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async () => {
-//     const response = await fetch(
-//       `https://reqres.in/api/users/${Math.floor(Math.random() * 10 + 1)}`
-//     );
-//     const data = await response.json();
-//     store.dispatch(addUser(`${data.first_name} ${data.last_name}`));
-//     store.dispatch(increment());
-//   }
-// );
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async () => {
+    await store.dispatch(getUsers());
+  }
+);

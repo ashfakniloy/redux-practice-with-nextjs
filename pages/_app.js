@@ -1,17 +1,17 @@
-import { Provider } from "react-redux";
-import getStore from "../app/store";
-// import { wrapper } from "../app/store";
+// import { Provider } from "react-redux";
+// import getStore from "../app/store";
+import { wrapper } from "../app/store";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  const store = getStore(pageProps.initialState);
+  // const store = getStore(pageProps.initialState);
 
   return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-    </Provider>
+    // <Provider store={store}>
+    <Component {...pageProps} />
+    // </Provider>
   );
 }
 
-// export default wrapper.withRedux(MyApp);
-export default MyApp;
+export default wrapper.withRedux(MyApp);
+/// export default MyApp;
