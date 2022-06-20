@@ -29,8 +29,6 @@ export default function Home() {
     dispatch(getTodos());
   }, []);
 
-  console.log(todos);
-
   return (
     <div className="bg-blue-50">
       <Header />
@@ -77,8 +75,9 @@ export default function Home() {
           todos.slice(0, 10).map((todo, i) => <p key={i}>{todo.title}</p>)}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex gap-5">
         <Link href="/">Go to home</Link>
+        <Link href="/table">Go to table page</Link>
       </div>
     </div>
   );
