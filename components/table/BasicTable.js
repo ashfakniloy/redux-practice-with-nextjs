@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useTable } from "react-table";
+import { useTable, useSortBy } from "react-table";
+import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 import { COLUMNS } from "./columns";
 import MOCK_DATA from "./data.json";
 
@@ -8,10 +9,13 @@ function BasicTable() {
   const data = useMemo(() => MOCK_DATA, []);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({
-      columns,
-      data,
-    });
+    useTable(
+      {
+        columns,
+        data,
+      },
+      useSortBy
+    );
 
   return (
     <div className="p-5 flex justify-center">
@@ -26,10 +30,21 @@ function BasicTable() {
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th
-                    {...column.getHeaderProps()}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="p-2 lg:px-10 lg:py-3 border-collapse border border-slate-300"
                   >
                     {column.render("Header")}
+                    <span className="inline-block px-2">
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <FaAngleDown />
+                        ) : (
+                          <FaAngleUp />
+                        )
+                      ) : (
+                        ""
+                      )}
+                    </span>
                   </th>
                 ))}
               </tr>
