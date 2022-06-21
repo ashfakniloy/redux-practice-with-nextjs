@@ -1,16 +1,23 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   useTable,
   useSortBy,
   useGlobalFilter,
   useFilters,
   usePagination,
+  useRowSelect,
 } from "react-table";
-import { FaAngleUp, FaAngleDown } from "react-icons/fa";
+import {
+  FaAngleUp,
+  FaAngleDown,
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+} from "react-icons/fa";
 import { COLUMNS } from "./columns";
 import MOCK_DATA from "./data.json";
 import { GlobalFilter } from "./GlobalFilter";
 import { ColumnFilter } from "./ColumnFilter";
+import { Checkbox } from "./Checkbox";
 
 function Table() {
   const columns = useMemo(() => COLUMNS, []);
@@ -36,6 +43,8 @@ function Table() {
     pageOptions,
     gotoPage,
     pageCount,
+    setPageSize,
+    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -45,10 +54,37 @@ function Table() {
     useGlobalFilter,
     useFilters,
     useSortBy,
-    usePagination
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        {
+          id: "selection",
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <Checkbox {...getToggleAllRowsSelectedProps()} />
+          ),
+          Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps()} />,
+        },
+        ...columns,
+      ]);
+    }
   );
 
-  const { globalFilter, pageIndex } = state;
+  const { globalFilter, pageIndex, pageSize } = state;
+
+  const selectedRows = JSON.stringify(
+    {
+      selectedFlatRows: selectedFlatRows.map((row) => row.original),
+    },
+    null,
+    2
+  );
+
+  console.log(selectedRows);
+
+  // const [pageNumber, setPageNumber] = useState(pageIndex + 1);
+
+  // console.log(pageIndex + 1);
 
   return (
     <div className="p-5 flex justify-center">
@@ -79,7 +115,7 @@ function Table() {
                           <FaAngleUp />
                         )
                       ) : (
-                        <p className="text-xs">Sort</p>
+                        <p className="text-xs first:hidden">Sort</p>
                       )}
                     </span>
                     <div className="mt-2 text-black font-normal">
@@ -116,18 +152,35 @@ function Table() {
           </tbody>
         </table>
 
-        <div className="mt-2 space-x-2 text-center">
+        <div className="flex justify-center items-center mt-2 space-x-2">
           <span className="text-sm">
             Page{" "}
             <strong>
               {pageIndex + 1} of {pageOptions.length}
             </strong>
           </span>
+
+          <span>
+            | Rows per page:{" "}
+            <select
+              className="outline-none w-12 border border-slate-300"
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              {[10, 20, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </span>
+
           <span>
             | Go to page:{" "}
             <input
               type="number"
               min="1"
+              max={pageOptions.length}
               className="w-10 outline-none border border-slate-500"
               defaultValue={pageIndex + 1}
               onChange={(e) => {
@@ -138,34 +191,37 @@ function Table() {
               }}
             />
           </span>
-          <button
-            className="p-1 rounded-sm bg-slate-300 disabled:opacity-50"
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-          >
-            {"<<"}
-          </button>
-          <button
-            className="bg-slate-300 active:bg-slate-400 px-3 py-1 rounded-sm text-sm disabled:opacity-50"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Previous
-          </button>
-          <button
-            className="bg-slate-300 active:bg-slate-400 px-3 py-1 rounded-sm text-sm disabled:opacity-50"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            Next
-          </button>
-          <button
-            className="p-1 rounded-sm bg-slate-300 disabled:opacity-50"
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          >
-            {">>"}
-          </button>
+
+          <div className="flex gap-1">
+            <button
+              className="p-1 text-sm rounded-sm bg-slate-300 disabled:opacity-50"
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+            >
+              <FaAngleDoubleLeft />
+            </button>
+            <button
+              className="bg-slate-300 active:bg-slate-400 px-3 py-1 rounded-sm text-sm disabled:opacity-50"
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
+              Previous
+            </button>
+            <button
+              className="bg-slate-300 active:bg-slate-400 px-3 py-1 rounded-sm text-sm disabled:opacity-50"
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
+              Next
+            </button>
+            <button
+              className="p-1 text-sm rounded-sm  bg-slate-300 disabled:opacity-50"
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
+              <FaAngleDoubleRight />
+            </button>
+          </div>
         </div>
       </div>
     </div>
