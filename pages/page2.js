@@ -27,7 +27,7 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(getTodos());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="bg-blue-50">
