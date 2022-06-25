@@ -75,6 +75,7 @@ export default function Home() {
       <div className="mt-4 flex gap-5">
         <Link href="/page2">Go to other page</Link>
         <Link href="/table">Go to table page</Link>
+        <Link href="/charts">Go to charts page</Link>
       </div>
     </div>
   );
