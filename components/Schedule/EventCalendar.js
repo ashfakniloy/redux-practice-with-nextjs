@@ -86,7 +86,7 @@ function EventCalendar() {
         </button>
       </div>
 
-      <div className="h-[300px] w-[550px]">
+      <div className="h-[400px] w-[550px] ">
         <Calendar
           localizer={localizer}
           events={allEvents}
