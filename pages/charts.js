@@ -2,6 +2,7 @@ import Link from "next/link";
 import BarChart from "../components/charts/BarChart";
 import LineChart from "../components/charts/LineChart";
 import DoughnutChart from "../components/charts/PieChart";
+import EventCalendar from "../components/Schedule/EventCalendar";
 
 function ChartsPage() {
   return (
@@ -13,6 +14,7 @@ function ChartsPage() {
           <LineChart />
           <BarChart />
           <DoughnutChart />
+          <EventCalendar />
         </div>
       </div>
     </div>
